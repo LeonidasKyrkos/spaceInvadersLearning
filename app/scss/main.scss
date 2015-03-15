@@ -1,0 +1,42 @@
+@import 'bourbon';
+@import 'utils/reset';
+@import 'default';
+@import 'utils/mixins';
+@import 'utils/variables';
+
+body{
+	background-color: $black;
+}
+
+
+// game window //
+
+$module: 			game;
+
+.#{$module} {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+}
+
+
+// spaceship //
+
+$module:			spaceship;
+
+.#{$module} {
+	position: absolute;
+	bottom: em(50);
+	left: 50%;
+	width: em(50);
+	height: em(50);
+	background-color: red;
+}
+
+// stars //
+
+.star {
+	border-radius: 100%;
+}
