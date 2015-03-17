@@ -24,8 +24,6 @@ Starfield.prototype.init = function() {
     var canvas = document.createElement('canvas');	    
     this.div.appendChild(canvas);
 
-    console.log(this.div);
-
 	this.canvas = canvas;
     this.canvas = canvas;
     this.canvas.width = this.width;
@@ -51,15 +49,17 @@ Starfield.prototype.draw = function() {
 
 	var background = new Image();
 	background.src = '/img/optimised/universe.jpg';
+	background.scope = this;
 	background.onload = function() {
 		ctx.drawImage(background,0,0);
-	}
+		var _this = background.scope;
 
-	ctx.fillStyle = ('#FFFFFF');
-	for(var i = 0; i < this.stars.length; i++) {
-        var star = this.stars[i];
-        ctx.fillRect(star.x, star.y, star.size, star.size);
-    }
+		ctx.fillStyle = ('#FFFFFF');
+		for(var i = 0; i < _this.stars.length; i++) {
+	        var star = _this.stars[i];
+	        ctx.fillRect(star.x, star.y, star.size, star.size);
+	    }
+	}	
 };
 
 Starfield.prototype.update = function() {
