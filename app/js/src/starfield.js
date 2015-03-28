@@ -1,5 +1,6 @@
 var debounce = require('debounce');
 var Star = require('./star');
+var resize = require('./resize');
 
 // star bullshit //
 
@@ -10,6 +11,7 @@ function Starfield(div) {
     this.height = 0;
     this.minVelocity = 100;
     this.maxVelocity = 275;
+    this.name = 'Starfield';
     this.stars = 300;
     this.div = div;
     this.init();
@@ -26,8 +28,7 @@ Starfield.prototype.init = function() {
 	this.canvas = canvas;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
-
-    window.onresize = debounce(this.calcSize.bind(this), 200);
+    window.addEventListener("resize",  debounce(resize.bind(this), 200));
 
     this.start();
 };
@@ -38,6 +39,7 @@ Starfield.prototype.start = function() {
 		stars[i] = this.starHandler(stars[i]);
 	}
 	this.stars = stars;
+	
 	this.interval();
 };
 
@@ -90,18 +92,6 @@ Starfield.prototype.interval = function() {
 	this.update();
     this.draw();
 	window.requestAnimationFrame(this.interval.bind(this));
-}
-
-
-Starfield.prototype.calcSize = function() {
-	this.width = window.innerWidth;
-	this.height = window.innerHeight;
-	this.canvas.width = this.width;
-	this.canvas.height = this.height;
-	for(var i = 0; i < this.stars; i++) {
-		stars[i] = this.starHandler(stars[i],died);
-	}
-	this.draw();
 }
 
 module.exports = Starfield;

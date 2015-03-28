@@ -1,45 +1,52 @@
 // Starship bullshit //
 
 var debounce = require('debounce');
+var resize = require('./resize');
+var Bullet = require('./bullet');
 
 function Starship() {
-	this.width = 75;
-	this.height = 150;
+	this.width = window.innerWidth;
+	this.height = window.innerHeight;
+	this.lengthX = 76;
+	this.lengthY = 150;
+	this.speed = 15;
 	this.shipDecal = '/img/optimised/f5s4.png';
-	
+	this.name = 'Starship';
 	this.init();
 }
 
 Starship.prototype.init = function() {
 	var canvas = document.getElementById('canvas');
 	this.canvas = canvas;
-	this.currentPosition = Math.round((this.canvas.width / 2) - (this.width/2));
-	this.yPosition = this.canvas.height - this.height - 50;
-	this.draw();
-	this.interval();
-	this.speed = 10;
+	this.currentPosition = Math.round((this.canvas.width / 2) - (this.lengthX/2));
+	this.yPosition = this.canvas.height - this.lengthY - 50;		
 	this.leftCount = 0;
 	this.rightCount = 0;
-	window.onresize = debounce(this.calcPosition.bind(this), 200);
-	document.onkeydown = this.keydownHandler.bind(this);
-}
+	this.bullets = [];
+	this.bulletN = 0;
+	window.addEventListener("resize",  debounce(resize.bind(this), 200));
+	document.onkeydown = this.keydownHandler.bind(this);	
 
-Starship.prototype.calcPosition = function() {
-	this.offset = Math.round((this.currentPosition / this.canvas.width) * 100) / 100;
-	this.canvas.width = window.innerWidth;
-	this.canvas.height = window.innerHeight;
-	this.currentPosition = Math.round((this.canvas.width * this.offset) * 100) / 100;
+	this.draw();
+	this.interval();
 }
 
 Starship.prototype.draw = function() {
 	var ctx = this.canvas.getContext('2d');
-
 	var ship = new Image();
 	ship.src = this.shipDecal;
 	ship.scope = this;
 	ship.onload = function() {
 		var _this = ship.scope;
-		ctx.drawImage(ship,_this.currentPosition,_this.yPosition,_this.width,_this.height);
+		ctx.drawImage(ship,_this.currentPosition,_this.yPosition,_this.lengthX,_this.lengthY);
+
+		ctx.fillStyle = ('#00F731');
+		for(var i = 0; i < _this.bullets.length; i++) {
+	        var bullet = _this.bullets[i];
+	        ctx.beginPath();
+	        ctx.arc(bullet.x, bullet.y, bullet.size, 2 * Math.PI, false);
+	        ctx.fill();
+	    }
 	};
 }
 
@@ -60,22 +67,25 @@ Starship.prototype.keydownHandler = function(e) {
 				this.goRight();				
 			}
 			break;
+		case 32:
+			this.bulletHandler();
+			break;
 
 		default: return;
 	}
 }
 
 Starship.prototype.goLeft = function() {
-	if(this.leftCount > 0) {
-		this.currentPosition -= 10;
+	if(this.leftCount > 0 && this.currentPosition > 0) {
+		this.currentPosition -= this.speed;
 		window.requestAnimationFrame(this.goLeft.bind(this));
 		document.onkeyup = this.resetCount.bind(this);
 	}	
 }
 
 Starship.prototype.goRight = function() {
-	if(this.rightCount > 0) {
-		this.currentPosition += 10;
+	if(this.rightCount > 0 && this.currentPosition < this.width - this.lengthX) {
+		this.currentPosition += this.speed;
 		window.requestAnimationFrame(this.goRight.bind(this));
 		document.onkeyup = this.resetCount.bind(this);
 	}	
@@ -89,11 +99,30 @@ Starship.prototype.resetCount = function(e) {
 	if(e.which === 39 || e.keycode === 39) {
 		this.rightCount = 0;
 		return;
+	}	
+}
+
+Starship.prototype.bulletHandler = function() {
+	var ctx = this.canvas.getContext('2d');
+	this.bullets.push(new Bullet((this.currentPosition + this.lengthX/2),this.yPosition));
+}
+
+Starship.prototype.update = function() {
+	for(var i = 0; i < this.bullets.length; i++) {
+		var bullet = this.bullets[i];
+		bullet.y -= bullet.velocity;
+
+		if(bullet.y > this.height) {
+			index = this.bullets[i];
+			this.bullets.splice(index,1);
+		}
 	}
-	
 }
 
 Starship.prototype.interval = function() {
+	if(this.bullets.length) {
+		this.update();
+	}	
 	this.draw();
 	window.requestAnimationFrame(this.interval.bind(this));
 }
