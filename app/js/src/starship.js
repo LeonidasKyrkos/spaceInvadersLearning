@@ -4,7 +4,7 @@ var debounce = require('debounce');
 var resize = require('./resize');
 var Bullet = require('./bullet');
 
-function Starship() {
+function Starship(starfield) {
 	this.width = window.innerWidth;
 	this.height = window.innerHeight;
 	this.lengthX = 76;
@@ -112,7 +112,7 @@ Starship.prototype.update = function() {
 		var bullet = this.bullets[i];
 		bullet.y -= bullet.velocity;
 
-		if(bullet.y > this.height) {
+		if(bullet.y < 0) {
 			index = this.bullets[i];
 			this.bullets.splice(index,1);
 		}
