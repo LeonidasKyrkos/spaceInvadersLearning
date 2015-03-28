@@ -8,8 +8,8 @@ function Starfield(div) {
     this.canvas = null;
     this.width = 0;
     this.height = 0;
-    this.minVelocity = 55;
-    this.maxVelocity = 200;
+    this.minVelocity = 100;
+    this.maxVelocity = 275;
     this.stars = 300;
     this.div = div;
     this.init();
@@ -21,11 +21,9 @@ Starfield.prototype.init = function() {
     this.width = window.innerWidth;
     this.height = window.innerHeight;		 
     
-    var canvas = document.createElement('canvas');	    
-    this.div.appendChild(canvas);
+    var canvas = document.getElementById('canvas'); 
 
 	this.canvas = canvas;
-    this.canvas = canvas;
     this.canvas.width = this.width;
     this.canvas.height = this.height;
 
@@ -37,12 +35,22 @@ Starfield.prototype.init = function() {
 Starfield.prototype.start = function() {
 	var stars = [];
 	for(var i = 0; i < this.stars; i++) {
-		stars[i] = new Star(Math.random()*this.width, Math.random()*this.height, Math.random()*2+1,(Math.random()*(this.maxVelocity - this.minVelocity))+this.minVelocity);
-		// write function for creation of stars //
+		stars[i] = this.starHandler(stars[i]);
 	}
 	this.stars = stars;
 	this.interval();
 };
+
+Starfield.prototype.starHandler = function(currentStar,starStatus) {
+	var startPoint;
+	if(starStatus === 'died') {
+		startPoint = 0;
+	} else {
+		startPoint = Math.random()*this.height;
+	}	
+	currentStar = new Star(Math.random()*this.width, startPoint, Math.random()*2+1,(Math.random()*(this.maxVelocity - this.minVelocity))+this.minVelocity);
+	return currentStar;
+}
 
 Starfield.prototype.draw = function() {
 	var ctx = this.canvas.getContext('2d');
@@ -59,7 +67,7 @@ Starfield.prototype.draw = function() {
 	        var star = _this.stars[i];
 	        ctx.fillRect(star.x, star.y, star.size, star.size);
 	    }
-	}	
+	};
 };
 
 Starfield.prototype.update = function() {
@@ -69,7 +77,7 @@ Starfield.prototype.update = function() {
 		star.y += dt * star.velocity;
 
 		if(star.y > this.height) {
-			this.stars[i] = new Star(Math.random()*this.width, 0, Math.random()*2+1,(Math.random()*(this.maxVelocity - this.minVelocity))+this.minVelocity);
+			this.stars[i] = this.starHandler(this.stars[i],'died');
 		}
 	}
 };
