@@ -58,8 +58,12 @@ Starfield.prototype.draw = function() {
 	var background = new Image();
 	background.src = '/img/optimised/universe.jpg';
 	background.scope = this;
+	background.baseHeight = 1080;
+	background.baseWidth = 1920; 
+	background.width = background.baseWidth;
+	background.height = background.baseHeight;
 	background.onload = function() {
-		ctx.drawImage(background,0,0);
+		ctx.drawImage(background,0,0,background.width,background.height);
 		var _this = background.scope;
 
 		ctx.fillStyle = ('#FFFFFF');
@@ -94,6 +98,9 @@ Starfield.prototype.calcSize = function() {
 	this.height = window.innerHeight;
 	this.canvas.width = this.width;
 	this.canvas.height = this.height;
+	for(var i = 0; i < this.stars; i++) {
+		stars[i] = this.starHandler(stars[i],died);
+	}
 	this.draw();
 }
 

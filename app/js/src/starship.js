@@ -1,5 +1,7 @@
 // Starship bullshit //
 
+var debounce = require('debounce');
+
 function Starship() {
 	this.width = 75;
 	this.height = 150;
@@ -11,14 +13,22 @@ function Starship() {
 Starship.prototype.init = function() {
 	var canvas = document.getElementById('canvas');
 	this.canvas = canvas;
-	this.currentPosition = (this.canvas.width / 2) - (this.width/2);
+	this.currentPosition = Math.round((this.canvas.width / 2) - (this.width/2));
 	this.yPosition = this.canvas.height - this.height - 50;
 	this.draw();
 	this.interval();
 	this.speed = 10;
 	this.leftCount = 0;
 	this.rightCount = 0;
+	window.onresize = debounce(this.calcPosition.bind(this), 200);
 	document.onkeydown = this.keydownHandler.bind(this);
+}
+
+Starship.prototype.calcPosition = function() {
+	this.offset = Math.round((this.currentPosition / this.canvas.width) * 100) / 100;
+	this.canvas.width = window.innerWidth;
+	this.canvas.height = window.innerHeight;
+	this.currentPosition = Math.round((this.canvas.width * this.offset) * 100) / 100;
 }
 
 Starship.prototype.draw = function() {
