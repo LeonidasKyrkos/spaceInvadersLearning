@@ -30,7 +30,9 @@ Level.prototype.draw = function() {
 	ctx.fillStyle = ('#FFFFFF');
 	for(var i = 0; i < this.enemies.length; i++) {
         var enemy = this.enemies[i];
-        ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+        var enemyImg = new Image();
+        enemyImg.src = '/img/optimised/me.png';
+        ctx.drawImage(enemyImg,enemy.x,enemy.y,enemy.size,enemy.size);
     }
     if(this.enemies.length < 1) {
     	this.currentLevel += 1;
