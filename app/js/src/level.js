@@ -27,11 +27,10 @@ Level.prototype.enemyHandler = function() {
 
 Level.prototype.draw = function() {
 	var ctx = this.canvas.getContext('2d');	
-	ctx.fillStyle = ('#FFFFFF');
+	var enemyImg = new Image();
+	enemyImg.src = '/img/optimised/me.png';
 	for(var i = 0; i < this.enemies.length; i++) {
-        var enemy = this.enemies[i];
-        var enemyImg = new Image();
-        enemyImg.src = '/img/optimised/me.png';
+        var enemy = this.enemies[i];        
         ctx.drawImage(enemyImg,enemy.x,enemy.y,enemy.size,enemy.size);
     }
     if(this.enemies.length < 1) {
