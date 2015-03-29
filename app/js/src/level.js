@@ -3,7 +3,8 @@ var Enemy = require('./enemy');
 function Level(level,ship) {
 	this.currentLevel = level;	
 	this.ship = ship;
-
+	this.loseBox = document.getElementsByClassName('game__lose-box')[0];
+	this.loseBox.onclick = this.restart.bind(this);
 	this.init();
 }
 
@@ -38,13 +39,6 @@ Level.prototype.draw = function() {
     	this.ship.bullets.splice(1,this.ship.bullets.length);
     	this.init();
     }
-    if(this.lost) {
-    	ctx.fillStyle = ('red');
-    	ctx.fillRect(this.canvas.width/2 - this.lostBoxWidth/2,this.canvas.height/2 - this.lostBoxHeight/2, this.lostBoxWidth,this.lostBoxHeight);
-    	ctx.fillStyle = ('black');
-    	ctx.font = '70px Arial';
-    	ctx.fillText('You lose',this.canvas.width/2 - this.lostBoxWidth/2 + 15,this.canvas.height/2 + 20)
-    }
 }
 
 Level.prototype.update = function() {
@@ -61,7 +55,8 @@ Level.prototype.update = function() {
 			}
 		}
 		if(enemy.y + enemy.size >= this.canvas.height || enemy.y >= this.ship.yPosition - enemy.size && enemy.x >= this.ship.currentPosition && enemy.x <= this.ship.currentPosition + this.ship.lengthX) {
-			this.lost = true;
+			this.lost = true;			
+			this.loseBox.classList.remove('hide');
 		} else {
 			enemy.y += enemy.velocity;
 		}				
@@ -85,6 +80,13 @@ Level.prototype.interval = function() {
 		window.requestAnimationFrame(this.interval.bind(this));
 	}
 	
+}
+
+Level.prototype.restart = function() {
+	this.lost = false;
+	this.enemies.splice(1,this.enemies.length);
+	this.loseBox.classList.add('hide');
+	this.init();
 }
 
 module.exports = Level;
