@@ -78,16 +78,16 @@ Starship.prototype.keydownHandler = function(e) {
 Starship.prototype.goLeft = function() {
 	if(this.leftCount > 0 && this.currentPosition > 0) {
 		this.currentPosition -= this.speed;
-		window.requestAnimationFrame(this.goLeft.bind(this));
 		document.onkeyup = this.resetCount.bind(this);
+		window.requestAnimationFrame(this.goLeft.bind(this));		
 	}	
 }
 
 Starship.prototype.goRight = function() {
 	if(this.rightCount > 0 && this.currentPosition < this.width - this.lengthX) {
 		this.currentPosition += this.speed;
-		window.requestAnimationFrame(this.goRight.bind(this));
 		document.onkeyup = this.resetCount.bind(this);
+		window.requestAnimationFrame(this.goRight.bind(this));		
 	}	
 }
 
@@ -111,11 +111,6 @@ Starship.prototype.update = function() {
 	for(var i = 0; i < this.bullets.length; i++) {
 		var bullet = this.bullets[i];
 		bullet.y -= bullet.velocity;
-
-		if(bullet.y < 0) {
-			index = this.bullets[i];
-			this.bullets.splice(index,1);
-		}
 	}
 }
 
@@ -126,9 +121,5 @@ Starship.prototype.interval = function() {
 	this.draw();
 	window.requestAnimationFrame(this.interval.bind(this));
 }
-
-
-
-
 
 module.exports = Starship;
